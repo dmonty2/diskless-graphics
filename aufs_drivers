@@ -1,0 +1,38 @@
+#!/bin/bash
+# Desc: Creates aufs folders to extract nvidia drivers.
+#       The base ROOTS are non-proprietary drivers.
+# Auth: Dean M
+# Date: May 2016
+
+VS="/var/lib/lxc"
+ROOTS="$VS/xenial32 $VS/xenial64"
+NEW="$VS/new"
+DRIVERS="nvidia-304 nvidia-340 nvidia-361"
+mkdir -p $VS/drivers $NEW
+for ROOT in `echo $ROOTS`; do
+  RT=`basename $ROOT`
+  for DRIVER in `echo $DRIVERS`; do
+    echo "=== $DRIVER for $RT ===
+    rm -fr $VS/drivers/$RT/$DRIVER
+    mkdir -p $VS/drivers/$RT/$DRIVER
+    mount -t aufs -o br=$VS/drivers/$RT/$DRIVER=rw:$ROOT/rootfs=ro -o udba=reval none $NEW
+    mount -t proc proc $NEW/proc
+    mount --bind /dev $NEW/dev
+    echo  "apt-get install $DRIVER" > $NEW/root/install
+    chmod 700 $NEW/root/install
+    chroot $NEW /root/install
+    umount $NEW/proc
+    umount $NEW/dev
+    umount $NEW
+    rm -f $VS/drivers/$RT/$DRIVER/var/cache/apt/archives/*.deb
+    rm -fr $VS/drivers/$RT/$DRIVER/home
+    rm -fr $VS/drivers/$RT/$DRIVER/run
+    rm -fr $VS/drivers/$RT/$DRIVER/tmp
+    rm -fr $VS/drivers/$RT/$DRIVER/usr/local
+    rm -fr $VS/drivers/$RT/$DRIVER/var/cache
+    rm -fr $VS/drivers/$RT/$DRIVER/var/log
+    mkdir -p $ROOT/rootfs/drivers/$DRIVER
+    rm -fr $ROOT/rootfs/drivers/$DRIVER
+    cp -a $VS/drivers/$RT/$DRIVER $ROOT/rootfs/drivers/
+  done
+done
