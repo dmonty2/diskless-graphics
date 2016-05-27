@@ -3,6 +3,9 @@
 # Auth: Dean M
 # Date: May 24 2016
 
+# this next line is a seperate script not in the scope of this git
+#shutdown_all_diskless_stations
+
 VS="/var/lib/lxc"
 ROOTS="$VS/xenial32/rootfs $VS/xenial64/rootfs"
 for ROOT in `echo $ROOTS`; do
