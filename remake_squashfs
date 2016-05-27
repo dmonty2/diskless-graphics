@@ -1,0 +1,19 @@
+#!/bin/bash
+# Desc: re-create squash fs
+#       creates as *_new.sfs - in order to not running machines.
+#       shutdown diskless clients; move *_new.sfs to *.sfs; and reload nbd-server
+# Auth: Dean M
+# Date: May 24 2016
+
+VS="/var/lib/lxc"
+ROOTS="$VS/xenial32 $VS/xenial64"
+for ROOT in `echo $ROOTS`; do
+  RT=`basename $ROOT`
+  mkdir -p $ROOT/rootfs/squashed
+  mount -t proc proc $ROOT/rootfs/proc
+  mount --bind /dev $ROOT/rootfs/dev
+  chroot $ROOT/rootfs/ nice -n 19 mksquashfs /opt /squashed/opt_new.sfs -no-progress
+  chroot $ROOT/rootfs/ nice -n 19 mksquashfs /usr /squashed/usr_new.sfs -no-progress
+  umount $ROOT/rootfs/dev
+  umount $ROOT/rootfs/proc
+done
