@@ -174,11 +174,9 @@ if [ "${aufs}" = "tmpfs" ]; then
 
   fi
   fstab1="  #
-  #   RootAufs has mounted etc and var file system in ram
+  #  RootAufs has mounted etc and var file system in ram
   #
-  #  This fstab is in ram and the real fstab can be found /ro/etc/fstab
-  #  the root file system ' / ' has been removed.
-  #  All Swap files have been removed. 
+  #  This fstab is in ram found under /rw
   #
 
   " 
