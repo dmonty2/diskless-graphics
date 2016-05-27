@@ -32,7 +32,8 @@ This creates separate aufs overlay folders that only contain the nvidia-304 nvid
 ## initramfs-tools
 /etc/initramfs-tools files are to configure the diskless clients to
 * use nbd-squashfs.
-* auto-detect nvidia driver version to aufs-mount on-top of the file-system.
+* auto-detect nvidia driver version to aufs-mount over top of the base file-system.
+* overlay a aufs-tmpfs on the read-only file systems.
 
 These are enabled by passing the following arguments to your pxeboot menu:
 ```
