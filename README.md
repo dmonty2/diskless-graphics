@@ -16,7 +16,12 @@ remake_squashfs will compress usr and opt partitions which greatly increases the
 
 ```
 
-Once the opt_new.sfs and usr_new.sfs are finished compressing.  I usually have an `at` job that that does the following at night after an upgrade.
+## enable_squashfs
+Once the opt_new.sfs and usr_new.sfs are finished compressing.  I usually do:
+```
+echo enable_squashfs | at 10PM
+```
+This will:
 1. Shutdown all diskless stations - they will crash if you reload nbd-server with an updated squashfs.
 2. cd /squashed/ mv opt_new.sfs opt.sfs; mv usr_new.sfs usr.sfs
 3. reload nbd-server
