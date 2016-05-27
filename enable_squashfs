@@ -1,0 +1,15 @@
+#!/bin/bash
+# Desc: enable squash fs
+# Auth: Dean M
+# Date: May 24 2016
+
+VS="/var/lib/lxc"
+ROOTS="$VS/xenial32/rootfs $VS/xenial64/rootfs"
+for ROOT in `echo $ROOTS`; do
+  for X in usr opt; do
+    if [ -e ${ROOT}/squashed/${X}_new.sfs ]; then
+      mv ${ROOT}/squashed/${X}_new.sfs ${ROOT}/squashed/${X}.sfs
+    fi
+  done
+done
+/etc/init.d/nbd-server restart
